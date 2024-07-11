@@ -3,6 +3,8 @@ using FluentValidation.AspNetCore;
 using WebApiVS.Configuration;
 using HomeApi.Contracts.Validation;
 using HomeApi.Data.Repos;
+using HomeApi.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApiVS
 {
@@ -17,7 +19,6 @@ namespace WebApiVS
                 .AddJsonFile("HomeOptions.json")
                 .Build();
             // Add services to the container.
-
             builder.Services.AddControllers();
             // Подключаем валидацию
             builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AddDeviceRequestValidator>());
@@ -34,9 +35,10 @@ namespace WebApiVS
             builder.Services.AddSingleton<IDeviceRepository, DeviceRepository>();
             builder.Services.AddSingleton<IRoomRepository, RoomRepository>();
             // Загружаем только адресс (вложенный Json-объект))
-            builder.Services.Configure<Address>(Configuration.GetSection("Address"));
+            builder.Services.Configure<Address>(confi.GetSection("Address"));
 
-            string connection = Configuration.GetConnectionString("DefaultConnection");
+            string connection = confi.GetConnectionString("DefaultConnection");
+            builder.Services.AddDbContext<HomeApiContext>(options => options.UseSqlServer(connection), ServiceLifetime.Singleton);
 
             var app = builder.Build();
 
