@@ -19,6 +19,7 @@ namespace WebApiVS
             CreateMap<AddDeviceRequest, Device>();
             CreateMap<AddRoomRequest, Room>();
             CreateMap<Device, DeviceView>();
+            CreateMap<DeleteDeviceRequest, Device>();
         }
     }
 }

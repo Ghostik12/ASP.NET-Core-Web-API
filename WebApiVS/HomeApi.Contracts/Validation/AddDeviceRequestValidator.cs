@@ -27,7 +27,7 @@ namespace HomeApi.Contracts.Validation
            "Bathroom",
            "Livingroom",
            "Toilet"
-       };
+            };
 
             /* Зададим правила валидации */
 

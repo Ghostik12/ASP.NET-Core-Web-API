@@ -62,6 +62,24 @@ namespace WebApiVS.Controllers
             return StatusCode(201, $"Устройство {request.Name} добавлено. Идентификатор: {newDevice.Id}");
         }
 
+        [HttpPost]
+        [Route("delete")]
+        public async Task<IActionResult> DeleteDevice(DeleteDeviceRequest request)
+        {
+            var room = await _rooms.GetRoomByName(request.Location);
+            if (room == null)
+                return StatusCode(400, $"Ошибка: Комната {request.Location} не подключена. Сначала подключите комнату!");
+
+            var device = await _devices.GetDeviceByName(request.Name);
+            if (device == null)
+                return StatusCode(400, $"Ошибка: Устройство {request.Name} не существует.");
+
+            var delDevice = _mapper.Map<DeleteDeviceRequest, Device>(request);
+            await _devices.DeleteDevice(delDevice);
+
+            return StatusCode(201, $"Устройство {request.Name} удалено. Идентификатор: {delDevice.Id}");
+        }
+
         /// <summary>
         /// Обновление существующего устройства
         /// </summary>
