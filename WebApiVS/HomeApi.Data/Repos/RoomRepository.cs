@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using HomeApi.Data.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using HomeApi.Data.Queries;
 
 namespace HomeApi.Data.Repos
 {
@@ -31,6 +33,20 @@ namespace HomeApi.Data.Repos
             var entry = _context.Entry(room);
             if (entry.State == EntityState.Detached)
                 await _context.Rooms.AddAsync(room);
+
+            await _context.SaveChangesAsync();
+        }
+        
+        public async Task UpdateRoom(Room room, UpdateRoomQuery query)
+        {
+            if (query.NewGasConnected != null)
+                room.GasConnected = query.NewGasConnected;
+            if (query.NewVoltage != null)
+                room.Voltage = query.NewVoltage;
+
+            var entry = _context.Entry(room);
+            if (entry.State == EntityState.Detached)
+                _context.Rooms.Update(room);
 
             await _context.SaveChangesAsync();
         }
